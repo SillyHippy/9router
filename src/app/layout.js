@@ -19,7 +19,7 @@ export const metadata = {
   title: "9Router - AI Infrastructure Management",
   description: "One endpoint for all your AI providers. Manage keys, monitor usage, and scale effortlessly.",
   icons: {
-    icon: "/favicon.svg",
+    icon: (process.env.NEXT_PUBLIC_BASE_PATH || "") + "/favicon.svg",
   },
 };
 
@@ -34,6 +34,11 @@ export default function RootLayout({ children }) {
         <script
           dangerouslySetInnerHTML={{
             __html: `if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){document.documentElement.classList.add('fonts-loaded')})}else{document.documentElement.classList.add('fonts-loaded')}`,
+          }}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var bp="${process.env.NEXT_PUBLIC_BASE_PATH||""}";if(!bp)return;var of=window.fetch;window.fetch=function(u,o){if(typeof u==="string"&&u.startsWith("/")&&!u.startsWith(bp))u=bp+u;return of.call(this,u,o)};})();`,
           }}
         />
       </head>

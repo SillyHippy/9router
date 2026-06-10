@@ -187,7 +187,7 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
 
     async function loadAuthStatus() {
       try {
-        const res = await fetch("/api/auth/status", { cache: "no-store" });
+        const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/auth/status", { cache: "no-store" });
         if (!res.ok) return;
         const data = await res.json();
         if (!cancelled) {
@@ -210,7 +210,7 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch("/api/auth/logout", { method: "POST" });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/auth/logout", { method: "POST" });
       if (res.ok) {
         router.push("/login");
         router.refresh();
