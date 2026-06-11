@@ -82,6 +82,35 @@ const LOCAL_ONLY_PATHS = [
 
 const LOOPBACK_HOSTS = new Set(["localhost", "127.0.0.1", "::1"]);
 
+function getBasePath(request) {
+  // Prefer request.nextUrl.basePath (set by Next.js basePath middleware processing)
+  if (request.nextUrl?.basePath) return request.nextUrl.basePath;
+  // Fallback: env var (may be inlined at build or set at runtime)
+  if (process.env.NEXT_PUBLIC_BASE_PATH) return process.env.NEXT_PUBLIC_BASE_PATH;
+  if (process.env.NINEROUTER_BASE_PATH) return process.env.NINEROUTER_BASE_PATH;
+  // Last resort: extract from request URL by comparing with nextUrl pathname
+  try {
+    const fullUrl = request.url;
+    const pathOnly = request.nextUrl?.pathname || "";
+    if (fullUrl && pathOnly) {
+      const idx = fullUrl.indexOf(pathOnly);
+      // The bit before pathname includes scheme+host+basePath, so isolate basePath
+      if (idx > 0) {
+        const beforePath = fullUrl.substring(0, idx);
+        const urlObj = new URL(beforePath + "/x");
+        // basePath is the last segment of the path before pathname
+        const baseCandidate = beforePath.substring(beforePath.indexOf("://") + 3);
+        const slashIdx = baseCandidate.indexOf("/");
+        if (slashIdx >= 0) {
+          const bp = baseCandidate.substring(slashIdx);
+          return bp.replace(/\/$/, "");
+        }
+      }
+    }
+  } catch {}
+  return "";
+}
+
 function isLoopbackHostname(h) {
   if (!h) return false;
   const name = h.split(":")[0].replace(/^\[|\]$/g, "").toLowerCase();
@@ -209,7 +238,7 @@ export async function proxy(request) {
           const tunnelHost = settings.tunnelUrl ? new URL(settings.tunnelUrl).hostname.toLowerCase() : "";
           const tailscaleHost = settings.tailscaleUrl ? new URL(settings.tailscaleUrl).hostname.toLowerCase() : "";
           if ((tunnelHost && host === tunnelHost) || (tailscaleHost && host === tailscaleHost)) {
-            return NextResponse.redirect(new URL("/login", request.url));
+            return NextResponse.redirect(new URL(getBasePath(request) + "/login", request.url));
           }
         }
       }
@@ -226,16 +255,16 @@ export async function proxy(request) {
       if (await verifyDashboardAuthToken(token)) {
         return NextResponse.next();
       } else {
-        return NextResponse.redirect(new URL("/login", request.url));
+        return NextResponse.redirect(new URL(getBasePath(request) + "/login", request.url));
       }
     }
 
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL(getBasePath(request) + "/login", request.url));
   }
 
   // Redirect / to /dashboard if logged in, or /dashboard if it's the root
   if (pathname === "/") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL(getBasePath(request) + "/dashboard", request.url));
   }
 
   return NextResponse.next();

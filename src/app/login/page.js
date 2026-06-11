@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, Button, Input } from "@/shared/components";
 import { useRouter } from "next/navigation";
 
-export default function LoginPage() {
+export default function LoginPage() { console.log("HELLO FROM LOGIN PAGE"); 
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [resetHint, setResetHint] = useState("");
@@ -23,14 +23,25 @@ export default function LoginPage() {
     return () => clearInterval(id);
   }, [retryAfter]);
 
+  // Emergency hydration unblocker
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (hasPassword === null) {
+        console.log("Unblocking login form fallback");
+        setHasPassword(true);
+      }
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [hasPassword]);
+
   useEffect(() => {
     async function checkAuth() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
-      const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
       try {
-        const res = await fetch(`${baseUrl}/api/auth/status`, {
+        // Use relative path to respect basePath/proxy prefix
+        const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/auth/status", {
           signal: controller.signal,
         });
         clearTimeout(timeoutId);
@@ -65,7 +76,8 @@ export default function LoginPage() {
     setResetHint("");
 
     try {
-      const res = await fetch("/api/auth/login", {
+      // Use relative path to respect basePath/proxy prefix
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
@@ -88,7 +100,7 @@ export default function LoginPage() {
   };
 
   const handleOidcLogin = () => {
-    window.location.href = "/api/auth/oidc/start";
+    window.location.href = (process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/auth/oidc/start";
   };
 
   const oidcAvailable = oidcConfigured && ["oidc", "both"].includes(authMode);
