@@ -212,7 +212,7 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
     try {
       const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/auth/logout", { method: "POST" });
       if (res.ok) {
-        router.push((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/login");
+        router.push("/login");
         router.refresh();
       }
     } catch (err) {
