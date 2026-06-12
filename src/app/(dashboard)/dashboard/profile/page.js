@@ -553,7 +553,7 @@ export default function ProfilePage() {
     try {
       const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/auth/logout", { method: "POST" });
       if (res.ok) {
-        router.push("/login");
+        router.push((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/login");
         router.refresh();
       }
     } catch (err) {

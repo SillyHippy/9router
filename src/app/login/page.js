@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, Button, Input } from "@/shared/components";
 import { useRouter } from "next/navigation";
 
-export default function LoginPage() { console.log("HELLO FROM LOGIN PAGE"); 
+export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [resetHint, setResetHint] = useState("");
