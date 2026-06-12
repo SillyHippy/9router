@@ -91,7 +91,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setOidcRedirectUri(`${window.location.origin}/api/auth/oidc/callback`);
+      setOidcRedirectUri(`${window.location.origin}${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/auth/oidc/callback`);
     }
   }, []);
 
@@ -554,7 +554,7 @@ export default function ProfilePage() {
       const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
       const res = await fetch(basePath + "/api/auth/logout", { method: "POST" });
       if (res.ok) {
-        router.push("/login");
+        router.push(basePath + "/login");
         router.refresh();
       }
     } catch (err) {
