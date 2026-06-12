@@ -14,6 +14,10 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
   distDir: process.env.NEXT_DIST_DIR || ".next",
+  // basePath is required for middleware to receive request.nextUrl.basePath,
+  // for client-side navigation (router.push, Link) to auto-prepend the prefix,
+  // and for NEXT_PUBLIC_BASE_PATH to be inlined at build time.
+  // assetPrefix only prefixes static asset URLs and does NOT populate basePath in middleware.
   basePath: process.env.NINEROUTER_BASE_PATH || "",
   
   serverExternalPackages: ["better-sqlite3", "sql.js", "node:sqlite", "bun:sqlite"],
