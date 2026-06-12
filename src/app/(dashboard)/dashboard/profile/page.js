@@ -63,7 +63,7 @@ export default function ProfilePage() {
   }, [langOpen]);
 
   useEffect(() => {
-    fetch("/api/settings")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings")
       .then((res) => res.json())
       .then((data) => {
         setSettings(data);
@@ -102,7 +102,7 @@ export default function ProfilePage() {
     setProxyStatus({ type: "", message: "" });
 
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -138,7 +138,7 @@ export default function ProfilePage() {
     setProxyStatus({ type: "", message: "" });
 
     try {
-      const res = await fetch("/api/settings/proxy-test", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings/proxy-test", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ proxyUrl }),
@@ -168,7 +168,7 @@ export default function ProfilePage() {
     setProxyStatus({ type: "", message: "" });
 
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ outboundProxyEnabled }),
@@ -203,7 +203,7 @@ export default function ProfilePage() {
     setPassStatus({ type: "", message: "" });
 
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -229,7 +229,7 @@ export default function ProfilePage() {
 
   const updateFallbackStrategy = async (strategy) => {
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fallbackStrategy: strategy }),
@@ -244,7 +244,7 @@ export default function ProfilePage() {
 
   const updateComboStrategy = async (strategy) => {
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ comboStrategy: strategy }),
@@ -262,7 +262,7 @@ export default function ProfilePage() {
     if (isNaN(numLimit) || numLimit < 1) return;
 
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ stickyRoundRobinLimit: numLimit }),
@@ -280,7 +280,7 @@ export default function ProfilePage() {
     if (isNaN(numLimit) || numLimit < 1) return;
 
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ comboStickyRoundRobinLimit: numLimit }),
@@ -295,7 +295,7 @@ export default function ProfilePage() {
 
   const updateRequireLogin = async (requireLogin) => {
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ requireLogin }),
@@ -340,7 +340,7 @@ export default function ProfilePage() {
         payload.oidcClientSecret = secret;
       }
 
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -392,7 +392,7 @@ export default function ProfilePage() {
     setOidcTestStatus({ type: "", message: "" });
 
     try {
-      const saveRes = await fetch("/api/settings", {
+      const saveRes = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -414,7 +414,7 @@ export default function ProfilePage() {
         return;
       }
 
-      const res = await fetch("/api/auth/oidc/test", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/auth/oidc/test", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -447,7 +447,7 @@ export default function ProfilePage() {
 
   const updateObservabilityEnabled = async (enabled) => {
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ enableObservability: enabled }),
@@ -462,7 +462,7 @@ export default function ProfilePage() {
 
   const reloadSettings = async () => {
     try {
-      const res = await fetch("/api/settings");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings");
       if (!res.ok) return;
       const data = await res.json();
       setSettings(data);
@@ -475,7 +475,7 @@ export default function ProfilePage() {
     setDbLoading(true);
     setDbStatus({ type: "", message: "" });
     try {
-      const res = await fetch("/api/settings/database");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings/database");
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || "Failed to export database");
@@ -513,7 +513,7 @@ export default function ProfilePage() {
       const raw = await file.text();
       const payload = JSON.parse(raw);
 
-      const res = await fetch("/api/settings/database", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings/database", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -541,7 +541,7 @@ export default function ProfilePage() {
   const handleShutdown = async () => {
     setIsShuttingDown(true);
     try {
-      await fetch("/api/version/shutdown", { method: "POST" });
+      await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/version/shutdown", { method: "POST" });
     } catch (e) {
       // Expected to fail as server shuts down; ignore error
     }
@@ -551,7 +551,8 @@ export default function ProfilePage() {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch("/api/auth/logout", { method: "POST" });
+      const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+      const res = await fetch(basePath + "/api/auth/logout", { method: "POST" });
       if (res.ok) {
         router.push("/login");
         router.refresh();
