@@ -53,7 +53,7 @@ export default function Sidebar({ onClose }) {
   const INSTALL_CMD = UPDATER_CONFIG.installCmdLatest;
 
   useEffect(() => {
-    fetch("/api/settings")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings")
       .then(res => res.json())
       .then(data => { if (data.enableTranslator) setEnableTranslator(true); })
       .catch(() => {});
@@ -61,7 +61,7 @@ export default function Sidebar({ onClose }) {
 
   // Lazy check for new npm version on mount
   useEffect(() => {
-    fetch("/api/version")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/version")
       .then(res => res.json())
       .then(data => { if (data.hasUpdate) setUpdateInfo(data); })
       .catch(() => {});
@@ -91,7 +91,7 @@ export default function Sidebar({ onClose }) {
       setShutdownCountdown(remaining);
       if (remaining <= 0) {
         clearInterval(timer);
-        fetch("/api/version/shutdown", { method: "POST" }).catch(() => {});
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/version/shutdown", { method: "POST" }).catch(() => {});
         setIsDisconnected(true);
       }
     }, 1000);

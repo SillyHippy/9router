@@ -39,7 +39,7 @@ export default function KiloToolCard({ tool, isExpanded, onToggle, baseUrl, apiK
 
   const fetchModelAliases = async () => {
     try {
-      const res = await fetch("/api/models/alias");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/alias");
       const data = await res.json();
       if (res.ok) setModelAliases(data.aliases || {});
     } catch (error) {
@@ -64,7 +64,7 @@ export default function KiloToolCard({ tool, isExpanded, onToggle, baseUrl, apiK
   const checkStatus = async () => {
     setChecking(true);
     try {
-      const res = await fetch("/api/cli-tools/kilo-settings");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/kilo-settings");
       const data = await res.json();
       setStatus(data);
     } catch (error) {
@@ -82,7 +82,7 @@ export default function KiloToolCard({ tool, isExpanded, onToggle, baseUrl, apiK
         ? selectedApiKey
         : (!cloudEnabled ? "sk_9router" : selectedApiKey);
 
-      const res = await fetch("/api/cli-tools/kilo-settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/kilo-settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ baseUrl: getEffectiveBaseUrl(), apiKey: keyToUse, model: selectedModel }),
@@ -105,7 +105,7 @@ export default function KiloToolCard({ tool, isExpanded, onToggle, baseUrl, apiK
     setRestoring(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/cli-tools/kilo-settings", { method: "DELETE" });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/kilo-settings", { method: "DELETE" });
       const data = await res.json();
       if (res.ok) {
         setMessage({ type: "success", text: "Settings reset successfully!" });

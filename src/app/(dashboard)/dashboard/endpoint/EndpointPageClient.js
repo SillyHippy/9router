@@ -241,7 +241,7 @@ export default function APIPageClient({ machineId }) {
   // Trust user intent (settingsEnabled): UI stays "enabled" while watchdog restarts process
   const syncTunnelStatus = async () => {
     try {
-      const statusRes = await fetch("/api/tunnel/status", { cache: "no-store" });
+      const statusRes = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/status", { cache: "no-store" });
       if (!statusRes.ok) return;
       const data = await statusRes.json();
       const tEnabled = data.tunnel?.settingsEnabled ?? data.tunnel?.enabled ?? false;
@@ -263,8 +263,8 @@ export default function APIPageClient({ machineId }) {
     setTunnelChecking(true);
     try {
       const [settingsRes, statusRes] = await Promise.all([
-        fetch("/api/settings"),
-        fetch("/api/tunnel/status", { cache: "no-store" })
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings"),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/status", { cache: "no-store" })
       ]);
       if (settingsRes.ok) {
         const data = await settingsRes.json();
@@ -300,7 +300,7 @@ export default function APIPageClient({ machineId }) {
 
   const handleTunnelDashboardAccess = async (value) => {
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tunnelDashboardAccess: value }),
@@ -313,7 +313,7 @@ export default function APIPageClient({ machineId }) {
 
   const handleRequireApiKey = async (value) => {
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ requireApiKey: value }),
@@ -326,7 +326,7 @@ export default function APIPageClient({ machineId }) {
 
   const handleRtkEnabled = async (value) => {
     try {
-      const res = await fetch("/api/settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ rtkEnabled: value }),
@@ -339,7 +339,7 @@ export default function APIPageClient({ machineId }) {
 
   const patchSetting = async (patch) => {
     try {
-      await fetch("/api/settings", {
+      await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(patch),
@@ -361,7 +361,7 @@ export default function APIPageClient({ machineId }) {
 
   const fetchData = async () => {
     try {
-      const keysRes = await fetch("/api/keys");
+      const keysRes = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/keys");
       const keysData = await keysRes.json();
       if (keysRes.ok) {
         setKeys(keysData.keys || []);
@@ -396,7 +396,7 @@ export default function APIPageClient({ machineId }) {
       // Every 5 pings (~10s), check if backend process still alive
       if ((Date.now() - start) % 10000 < TUNNEL_PING_INTERVAL_MS) {
         try {
-          const statusRes = await fetch("/api/tunnel/status");
+          const statusRes = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/status");
           if (statusRes.ok) {
             const status = await statusRes.json();
             if (!status.tunnel?.enabled) {
@@ -426,7 +426,7 @@ export default function APIPageClient({ machineId }) {
     const pollProgress = async () => {
       while (polling) {
         try {
-          const r = await fetch("/api/tunnel/status");
+          const r = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/status");
           if (r.ok) {
             const s = await r.json();
             if (s.download?.downloading) {
@@ -442,7 +442,7 @@ export default function APIPageClient({ machineId }) {
     pollProgress();
 
     try {
-      const res = await fetch("/api/tunnel/enable", { method: "POST" });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/enable", { method: "POST" });
       polling = false;
       const data = await res.json();
       if (!res.ok) {
@@ -472,7 +472,7 @@ export default function APIPageClient({ machineId }) {
     setTunnelLoading(true);
     setTunnelStatus(null);
     try {
-      const res = await fetch("/api/tunnel/disable", { method: "POST" });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/disable", { method: "POST" });
       const data = await res.json();
       if (res.ok) {
         setTunnelEnabled(false);
@@ -493,7 +493,7 @@ export default function APIPageClient({ machineId }) {
   const checkTailscaleInstalled = async () => {
     setTsInstalled(null);
     try {
-      const res = await fetch("/api/tunnel/tailscale-check");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/tailscale-check");
       if (res.ok) {
         const data = await res.json();
         setTsInstalled(data.installed);
@@ -509,7 +509,7 @@ export default function APIPageClient({ machineId }) {
     setTsStatus(null);
     setTsInstallLog([]);
     try {
-      const res = await fetch("/api/tunnel/tailscale-install", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/tailscale-install", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sudoPassword: tsSudoPassword }),
@@ -592,7 +592,7 @@ export default function APIPageClient({ machineId }) {
     setTsProgress("Connecting...");
     clearUserAuth();
     try {
-      const res = await fetch("/api/tunnel/tailscale-enable", { method: "POST" });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/tailscale-enable", { method: "POST" });
       const data = await res.json();
 
       if (res.ok && data.success) {
@@ -609,13 +609,13 @@ export default function APIPageClient({ machineId }) {
         for (let i = 0; i < 40; i++) {
           await new Promise((r) => setTimeout(r, 3000));
           try {
-            const r2 = await fetch("/api/tunnel/tailscale-check");
+            const r2 = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/tailscale-check");
             if (r2.ok) {
               const check = await r2.json();
               if (check.loggedIn) {
                 clearUserAuth();
                 setTsProgress("Starting funnel...");
-                const res2 = await fetch("/api/tunnel/tailscale-enable", { method: "POST" });
+                const res2 = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/tailscale-enable", { method: "POST" });
                 const data2 = await res2.json();
                 if (res2.ok && data2.success) {
                   setTsUrl(data2.tunnelUrl || "");
@@ -659,7 +659,7 @@ export default function APIPageClient({ machineId }) {
     for (let i = 0; i < 40; i++) {
       await new Promise((r) => setTimeout(r, 3000));
       try {
-        const res = await fetch("/api/tunnel/tailscale-enable", { method: "POST" });
+        const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/tailscale-enable", { method: "POST" });
         const data = await res.json();
         if (res.ok && data.success) {
           clearUserAuth();
@@ -685,7 +685,7 @@ export default function APIPageClient({ machineId }) {
     setTsLoading(true);
     setTsStatus(null);
     try {
-      const res = await fetch("/api/tunnel/tailscale-disable", { method: "POST" });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/tailscale-disable", { method: "POST" });
       const data = await res.json();
       if (res.ok) {
         setTsEnabled(false);
@@ -717,7 +717,7 @@ export default function APIPageClient({ machineId }) {
     if (!newKeyName.trim()) return;
 
     try {
-      const res = await fetch("/api/keys", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/keys", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: newKeyName }),

@@ -11,11 +11,16 @@ import {
 } from "@/lib/auth/oidc";
 import { shouldUseSecureCookie } from "@/lib/auth/dashboardSession";
 
+function basePathUrl(path, request) {
+  const bp = request.nextUrl?.basePath || process.env.NINEROUTER_BASE_PATH || process.env.NEXT_PUBLIC_BASE_PATH || "";
+  return new URL(bp + path, getPublicOrigin(request));
+}
+
 export async function GET(request) {
   try {
     const config = await getOidcRuntimeConfig();
     if (!config) {
-      return NextResponse.redirect(new URL("/login?error=oidc_not_configured", getPublicOrigin(request)));
+      return NextResponse.redirect(basePathUrl("/login?error=oidc_not_configured", request));
     }
 
     const discovery = await fetchOidcDiscovery(config.issuerUrl);
@@ -47,6 +52,6 @@ export async function GET(request) {
 
     return NextResponse.redirect(authUrl);
   } catch (error) {
-    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error.message || "oidc_start_failed")}`, getPublicOrigin(request)));
+    return NextResponse.redirect(basePathUrl(`/login?error=${encodeURIComponent(error.message || "oidc_start_failed")}`, request));
   }
 }

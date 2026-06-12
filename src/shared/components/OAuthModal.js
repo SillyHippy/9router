@@ -69,7 +69,7 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
   const completeXaiManualCode = useCallback(async (code) => {
     if (!authData?.state) return;
     try {
-      const res = await fetch("/api/oauth/xai/manual-code", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/xai/manual-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code, state: authData.state }),
@@ -322,9 +322,9 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
       // Abort polling and cleanup proxy when modal closes
       pollingAbortRef.current = true;
       if (provider === "codex") {
-        fetch("/api/oauth/codex/stop-proxy").catch(() => {});
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/codex/stop-proxy").catch(() => {});
       } else if (provider === "xai") {
-        fetch("/api/oauth/xai/stop-proxy").catch(() => {});
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/xai/stop-proxy").catch(() => {});
       }
     }
   }, [isOpen, provider, startOAuthFlow]);
@@ -495,9 +495,9 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
   // Clear session on modal close + cleanup proxy
   const handleClose = useCallback(() => {
     if (provider === "codex") {
-      fetch("/api/oauth/codex/stop-proxy").catch(() => {});
+      fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/codex/stop-proxy").catch(() => {});
     } else if (provider === "xai") {
-      fetch("/api/oauth/xai/stop-proxy").catch(() => {});
+      fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/xai/stop-proxy").catch(() => {});
     }
     onClose();
   }, [onClose, provider]);

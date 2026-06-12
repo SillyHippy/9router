@@ -158,18 +158,18 @@ export default function MediaProviderKindPage() {
 
   useEffect(() => {
     if (!kindConfig) return;
-    fetch("/api/providers", { cache: "no-store" })
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers", { cache: "no-store" })
       .then((r) => r.json())
       .then((d) => setConnections(d.connections || []))
       .catch(() => {});
     if (isEmbedding) {
-      fetch("/api/provider-nodes", { cache: "no-store" })
+      fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes", { cache: "no-store" })
         .then((r) => r.json())
         .then((d) => setCustomNodes((d.nodes || []).filter((n) => n.type === "custom-embedding")))
         .catch(() => {});
     }
     if (supportsCombo) {
-      fetch("/api/combos", { cache: "no-store" })
+      fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/combos", { cache: "no-store" })
         .then((r) => r.json())
         .then((d) => setCombos(d.combos || []))
         .catch(() => {});
@@ -213,7 +213,7 @@ export default function MediaProviderKindPage() {
     let i = 1;
     const existing = new Set(combos.map((c) => c.name));
     while (existing.has(name)) { name = `${base}-${i++}`; }
-    const res = await fetch("/api/combos", {
+    const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/combos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, models: [], kind }),

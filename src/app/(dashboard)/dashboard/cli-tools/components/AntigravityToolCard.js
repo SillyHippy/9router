@@ -51,7 +51,7 @@ export default function AntigravityToolCard({
 
   const loadSavedMappings = async () => {
     try {
-      const res = await fetch("/api/cli-tools/antigravity-mitm/alias?tool=antigravity");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/antigravity-mitm/alias?tool=antigravity");
       if (res.ok) {
         const data = await res.json();
         const aliases = data.aliases || {};
@@ -67,7 +67,7 @@ export default function AntigravityToolCard({
 
   const fetchModelAliases = async () => {
     try {
-      const res = await fetch("/api/models/alias");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/alias");
       const data = await res.json();
       if (res.ok) setModelAliases(data.aliases || {});
     } catch (error) {
@@ -77,7 +77,7 @@ export default function AntigravityToolCard({
 
   const fetchStatus = async () => {
     try {
-      const res = await fetch("/api/cli-tools/antigravity-mitm");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/antigravity-mitm");
       if (res.ok) {
         const data = await res.json();
         setStatus(data);
@@ -120,7 +120,7 @@ export default function AntigravityToolCard({
         || (apiKeys?.length > 0 ? apiKeys[0].key : null)
         || (!cloudEnabled ? "sk_9router" : null);
 
-      const res = await fetch("/api/cli-tools/antigravity-mitm", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/antigravity-mitm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ apiKey: keyToUse, sudoPassword: password }),
@@ -149,7 +149,7 @@ export default function AntigravityToolCard({
     setLoading(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/cli-tools/antigravity-mitm", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/antigravity-mitm", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sudoPassword: password }),
@@ -209,7 +209,7 @@ export default function AntigravityToolCard({
     setMessage(null);
 
     try {
-      const res = await fetch("/api/cli-tools/antigravity-mitm/alias", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/antigravity-mitm/alias", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tool: "antigravity", mappings: modelMappings }),

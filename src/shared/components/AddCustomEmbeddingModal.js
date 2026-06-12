@@ -69,7 +69,7 @@ export default function AddCustomEmbeddingModal({ isOpen, onClose, onCreated, on
   const handleValidate = async () => {
     setValidating(true);
     try {
-      const res = await fetch("/api/provider-nodes/validate", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

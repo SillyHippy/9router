@@ -1,0 +1,5 @@
+{
+  "name": "9router",
+  "local_port": 20128,
+  "entrypoint": "node /home/workspace/Projects/9router/.next/standalone/server.js"
+}

@@ -208,7 +208,7 @@ function AddApiKeyModal({ isOpen, provider, providerName, proxyPools, onSave, on
   const handleValidate = async () => {
     setValidating(true);
     try {
-      const res = await fetch("/api/providers/validate", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ provider, apiKey: formData.apiKey }),
@@ -226,7 +226,7 @@ function AddApiKeyModal({ isOpen, provider, providerName, proxyPools, onSave, on
       let isValid = false;
       try {
         setValidating(true); setValidationResult(null);
-        const res = await fetch("/api/providers/validate", {
+        const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/validate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ provider, apiKey: formData.apiKey }),
@@ -313,9 +313,9 @@ export default function ConnectionsCard({ providerId, isOAuth }) {
   const fetch_ = useCallback(async () => {
     try {
       const [connRes, proxyRes, settingsRes] = await Promise.all([
-        fetch("/api/providers", { cache: "no-store" }),
-        fetch("/api/proxy-pools?isActive=true", { cache: "no-store" }),
-        fetch("/api/settings", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/proxy-pools?isActive=true", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", { cache: "no-store" }),
       ]);
       const connData = await connRes.json();
       const proxyData = await proxyRes.json();
@@ -333,7 +333,7 @@ export default function ConnectionsCard({ providerId, isOAuth }) {
 
   const saveStrategy = async (strategy, stickyLimit) => {
     try {
-      const res = await fetch("/api/settings", { cache: "no-store" });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", { cache: "no-store" });
       const data = res.ok ? await res.json() : {};
       const current = data.providerStrategies || {};
       const override = {};
@@ -342,7 +342,7 @@ export default function ConnectionsCard({ providerId, isOAuth }) {
       const updated = { ...current };
       if (Object.keys(override).length === 0) delete updated[providerId];
       else updated[providerId] = override;
-      await fetch("/api/settings", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ providerStrategies: updated }) });
+      await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ providerStrategies: updated }) });
     } catch (e) { console.log("saveStrategy error:", e); }
   };
 
@@ -388,7 +388,7 @@ export default function ConnectionsCard({ providerId, isOAuth }) {
 
   const handleSaveApiKey = async (formData) => {
     try {
-      const res = await fetch("/api/providers", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ provider: providerId, ...formData }) });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ provider: providerId, ...formData }) });
       if (res.ok) { await fetch_(); setShowAddModal(false); }
     } catch (e) { console.log("save apikey error:", e); }
   };

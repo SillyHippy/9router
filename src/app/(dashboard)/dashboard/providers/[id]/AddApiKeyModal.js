@@ -69,7 +69,7 @@ export default function AddApiKeyModal({ isOpen, provider, providerName, isCompa
   const handleValidate = async () => {
     setValidating(true);
     try {
-      const res = await fetch("/api/providers/validate", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ provider, apiKey: formData.apiKey, providerSpecificData: buildProviderSpecificData() }),
@@ -98,7 +98,7 @@ export default function AddApiKeyModal({ isOpen, provider, providerName, isCompa
       try {
         setValidating(true);
         setValidationResult(null);
-        const res = await fetch("/api/providers/validate", {
+        const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/validate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ provider, apiKey: formData.apiKey, providerSpecificData: buildProviderSpecificData() }),
@@ -139,7 +139,7 @@ export default function AddApiKeyModal({ isOpen, provider, providerName, isCompa
       const baseName = parts.length >= 2 ? parts[0].trim() : "Key";
       const name = `${baseName} ${i + 1}`;
       try {
-        const res = await fetch("/api/providers", {
+        const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ provider, apiKey, name, priority: 1, testStatus: "unknown" }),

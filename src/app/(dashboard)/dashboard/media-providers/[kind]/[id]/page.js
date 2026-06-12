@@ -151,11 +151,11 @@ function EmbeddingExampleCard({ providerId, customAlias }) {
 
   useEffect(() => {
     setLocalEndpoint(window.location.origin);
-    fetch("/api/keys")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/keys")
       .then((r) => r.json())
       .then((d) => { setApiKey((d.keys || []).find((k) => k.isActive !== false)?.key || ""); })
       .catch(() => {});
-    fetch("/api/tunnel/status")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/status")
       .then((r) => r.json())
       .then((d) => { if (d.publicUrl) setTunnelEndpoint(d.publicUrl); })
       .catch(() => {});
@@ -186,7 +186,7 @@ function EmbeddingExampleCard({ providerId, customAlias }) {
     try {
       const headers = { "Content-Type": "application/json" };
       if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
-      const res = await fetch("/api/v1/embeddings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/v1/embeddings", {
         method: "POST",
         headers,
         body: JSON.stringify(buildBody()),
@@ -414,11 +414,11 @@ function TtsExampleCard({ providerId }) {
 
   useEffect(() => {
     setLocalEndpoint(window.location.origin);
-    fetch("/api/keys")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/keys")
       .then((r) => r.json())
       .then((d) => { setApiKey((d.keys || []).find((k) => k.isActive !== false)?.key || ""); })
       .catch(() => {});
-    fetch("/api/tunnel/status")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/status")
       .then((r) => r.json())
       .then((d) => { if (d.publicUrl) setTunnelEndpoint(d.publicUrl); })
       .catch(() => {});
@@ -958,16 +958,16 @@ function GenericExampleCard({ providerId, kind }) {
 
   useEffect(() => {
     setLocalEndpoint(window.location.origin);
-    fetch("/api/keys")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/keys")
       .then((r) => r.json())
       .then((d) => { setApiKey((d.keys || []).find((k) => k.isActive !== false)?.key || ""); })
       .catch(() => {});
-    fetch("/api/tunnel/status")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/status")
       .then((r) => r.json())
       .then((d) => { if (d.publicUrl) setTunnelEndpoint(d.publicUrl); })
       .catch(() => {});
     // Load active connections of this provider for pinning
-    fetch("/api/providers/client")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/client")
       .then((r) => r.json())
       .then((d) => {
         const conns = (d.connections || []).filter((c) => c.provider === providerId && c.isActive !== false);
@@ -1454,16 +1454,16 @@ function SttExampleCard({ providerId }) {
 
   useEffect(() => {
     setLocalEndpoint(window.location.origin);
-    fetch("/api/keys")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/keys")
       .then((r) => r.json())
       .then((d) => { setApiKey((d.keys || []).find((k) => k.isActive !== false)?.key || ""); })
       .catch(() => {});
-    fetch("/api/tunnel/status")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/status")
       .then((r) => r.json())
       .then((d) => { if (d.publicUrl) setTunnelEndpoint(d.publicUrl); })
       .catch(() => {});
     const loadCustom = () => {
-      fetch("/api/models/custom", { cache: "no-store" })
+      fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/custom", { cache: "no-store" })
         .then((r) => r.json())
         .then((d) => {
           const list = (d.models || []).filter((m) => m.type === "stt" && m.providerAlias === providerAlias);
@@ -1505,7 +1505,7 @@ function SttExampleCard({ providerId }) {
 
       const headers = {};
       if (apiKey) headers["Authorization"] = `Bearer ${apiKey}`;
-      const res = await fetch("/api/v1/audio/transcriptions", { method: "POST", headers, body: fd });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/v1/audio/transcriptions", { method: "POST", headers, body: fd });
       setLatency(Date.now() - start);
       const ct = res.headers.get("content-type") || "";
       const data = ct.includes("application/json") ? await res.json() : await res.text();
@@ -1732,7 +1732,7 @@ export default function MediaProviderDetailPage() {
   useEffect(() => {
     if (!isCustom) return;
     let cancelled = false;
-    fetch("/api/provider-nodes", { cache: "no-store" })
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes", { cache: "no-store" })
       .then((r) => r.json())
       .then((d) => {
         if (cancelled) return;

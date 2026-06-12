@@ -11,6 +11,11 @@ import {
 } from "@/lib/auth/oidc";
 import { setDashboardAuthCookie } from "@/lib/auth/dashboardSession";
 
+function basePathUrl(path, request) {
+  const bp = request.nextUrl?.basePath || process.env.NINEROUTER_BASE_PATH || process.env.NEXT_PUBLIC_BASE_PATH || "";
+  return new URL(bp + path, getPublicOrigin(request));
+}
+
 function clearOidcCookies(cookieStore) {
   cookieStore.delete("oidc_state");
   cookieStore.delete("oidc_nonce");
@@ -21,13 +26,13 @@ export async function GET(request) {
   const url = new URL(request.url);
   const error = url.searchParams.get("error");
   if (error) {
-    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error)}`, getPublicOrigin(request)));
+    return NextResponse.redirect(basePathUrl(`/login?error=${encodeURIComponent(error)}`, request));
   }
 
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   if (!code || !state) {
-    return NextResponse.redirect(new URL("/login?error=oidc_missing_code", getPublicOrigin(request)));
+    return NextResponse.redirect(basePathUrl("/login?error=oidc_missing_code", request));
   }
 
   const cookieStore = await cookies();
@@ -37,14 +42,14 @@ export async function GET(request) {
 
   if (!storedState || !storedNonce || !codeVerifier || storedState !== state) {
     clearOidcCookies(cookieStore);
-    return NextResponse.redirect(new URL("/login?error=oidc_invalid_state", getPublicOrigin(request)));
+    return NextResponse.redirect(basePathUrl("/login?error=oidc_invalid_state", request));
   }
 
   try {
     const config = await getOidcRuntimeConfig();
     if (!config) {
       clearOidcCookies(cookieStore);
-      return NextResponse.redirect(new URL("/login?error=oidc_not_configured", getPublicOrigin(request)));
+      return NextResponse.redirect(basePathUrl("/login?error=oidc_not_configured", request));
     }
 
     const discovery = await fetchOidcDiscovery(config.issuerUrl);
@@ -79,9 +84,9 @@ export async function GET(request) {
       oidcName: pickOidcDisplayName(payload),
     });
 
-    return NextResponse.redirect(new URL("/dashboard", getPublicOrigin(request)));
+    return NextResponse.redirect(basePathUrl("/dashboard", request));
   } catch (error) {
     clearOidcCookies(cookieStore);
-    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error.message || "oidc_callback_failed")}`, getPublicOrigin(request)));
+    return NextResponse.redirect(basePathUrl(`/login?error=${encodeURIComponent(error.message || "oidc_callback_failed")}`, request));
   }
 }

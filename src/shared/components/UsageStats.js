@@ -210,7 +210,7 @@ export default function UsageStats({ period: periodProp, setPeriod: setPeriodPro
   // Fetch connected providers once, deduplicate by provider type
   // Always include noAuth free providers (e.g. opencode) regardless of connections
   useEffect(() => {
-    fetch("/api/providers")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers")
       .then((r) => r.ok ? r.json() : null)
       .then((d) => {
         const seen = new Set();
@@ -253,7 +253,8 @@ export default function UsageStats({ period: periodProp, setPeriod: setPeriodPro
 
   // SSE connection - real-time updates for activeRequests + recentRequests only
   useEffect(() => {
-    const es = new EventSource("/api/usage/stream");
+    const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || "";
+    const es = new EventSource(BASE_PATH + "/api/usage/stream");
 
     es.onmessage = (e) => {
       try {

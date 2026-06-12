@@ -218,7 +218,7 @@ export default function BasicChatPageClient() {
       setLoadError("");
 
       try {
-        const providersRes = await fetch("/api/providers", { cache: "no-store" });
+        const providersRes = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers", { cache: "no-store" });
         const providersData = await providersRes.json().catch(() => ({}));
         const connections = Array.isArray(providersData.connections)
           ? providersData.connections.filter((connection) => connection?.isActive !== false)
@@ -636,7 +636,7 @@ export default function BasicChatPageClient() {
       }));
 
     try {
-      const response = await fetch("/api/dashboard/chat/completions", {
+      const response = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/dashboard/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
