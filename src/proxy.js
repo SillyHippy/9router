@@ -1,6 +1,6 @@
 import { proxy } from "./dashboardGuard";
 
-export default async function proxyHandler(request) {
+export default async function middleware(request) {
   return proxy(request);
 }
 
