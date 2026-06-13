@@ -27,7 +27,7 @@ export async function GET(request) {
     const state = createOidcState();
     const nonce = createOidcNonce();
     const { verifier, challenge } = createPkcePair();
-    const redirectUri = `${getPublicOrigin(request)}/api/auth/oidc/callback`;
+    const redirectUri = basePathUrl("/api/auth/oidc/callback", request).href;
     const authUrl = buildOidcAuthorizationUrl({
       authorizationEndpoint: discovery.authorization_endpoint,
       clientId: config.clientId,
