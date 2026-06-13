@@ -787,12 +787,13 @@ export default function APIPageClient({ machineId }) {
     });
   };
 
-  const [baseUrl, setBaseUrl] = useState("/v1");
+  const [baseUrl, setBaseUrl] = useState((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/v1");
 
   // Hydration fix: Only access window on client side
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setBaseUrl(`${window.location.origin}/v1`);
+      const bp = process.env.NEXT_PUBLIC_BASE_PATH || "";
+      setBaseUrl(`${window.location.origin}${bp}/v1`);
     }
   }, []);
 
