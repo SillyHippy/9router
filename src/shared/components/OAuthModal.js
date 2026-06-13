@@ -33,7 +33,7 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
       setIsLocalhost(
         window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
       );
-      setPlaceholderUrl(`${window.location.origin}/callback?code=...`);
+      setPlaceholderUrl(`${window.location.origin}${process.env.NEXT_PUBLIC_BASE_PATH || ""}/callback?code=...`);
     }
   }, []);
 
@@ -69,7 +69,7 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
   const completeXaiManualCode = useCallback(async (code) => {
     if (!authData?.state) return;
     try {
-      const res = await fetch("/api/oauth/xai/manual-code", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/xai/manual-code", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code, state: authData.state }),
@@ -161,7 +161,8 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
         setIsDeviceCode(true);
         setStep("waiting");
 
-        const deviceCodeUrl = new URL(`/api/oauth/${provider}/device-code`, window.location.origin);
+        const bp = process.env.NEXT_PUBLIC_BASE_PATH || "";
+        const deviceCodeUrl = new URL(`${bp}/api/oauth/${provider}/device-code`, window.location.origin);
         if (provider === "kiro" && idcConfig?.startUrl) {
           deviceCodeUrl.searchParams.set("start_url", idcConfig.startUrl);
           if (idcConfig.region) {
@@ -223,7 +224,7 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
       }
 
       // Build authorize URL first to get codeVerifier/state for codex server-side mode
-      const authorizeUrl = new URL(`/api/oauth/${provider}/authorize`, window.location.origin);
+      const authorizeUrl = new URL(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/oauth/${provider}/authorize`, window.location.origin);
       authorizeUrl.searchParams.set("redirect_uri", redirectUri);
       if (oauthMeta) {
         Object.entries(oauthMeta).forEach(([k, v]) => { if (v) authorizeUrl.searchParams.set(k, v); });
@@ -237,7 +238,7 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
       let codexServerSide = false;
       if (provider === "codex") {
         try {
-          const proxyUrl = new URL(`/api/oauth/codex/start-proxy`, window.location.origin);
+          const proxyUrl = new URL(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/oauth/codex/start-proxy`, window.location.origin);
           proxyUrl.searchParams.set("app_port", appPort);
           proxyUrl.searchParams.set("state", data.state);
           proxyUrl.searchParams.set("code_verifier", data.codeVerifier);
@@ -256,7 +257,7 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
       let xaiServerSide = false;
       if (provider === "xai") {
         try {
-          const proxyUrl = new URL(`/api/oauth/xai/start-proxy`, window.location.origin);
+          const proxyUrl = new URL(`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/api/oauth/xai/start-proxy`, window.location.origin);
           proxyUrl.searchParams.set("app_port", appPort);
           proxyUrl.searchParams.set("state", data.state);
           proxyUrl.searchParams.set("code_verifier", data.codeVerifier);
@@ -322,9 +323,9 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
       // Abort polling and cleanup proxy when modal closes
       pollingAbortRef.current = true;
       if (provider === "codex") {
-        fetch("/api/oauth/codex/stop-proxy").catch(() => {});
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/codex/stop-proxy").catch(() => {});
       } else if (provider === "xai") {
-        fetch("/api/oauth/xai/stop-proxy").catch(() => {});
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/xai/stop-proxy").catch(() => {});
       }
     }
   }, [isOpen, provider, startOAuthFlow]);
@@ -495,9 +496,9 @@ export default function OAuthModal({ isOpen, provider, providerInfo, onSuccess, 
   // Clear session on modal close + cleanup proxy
   const handleClose = useCallback(() => {
     if (provider === "codex") {
-      fetch("/api/oauth/codex/stop-proxy").catch(() => {});
+      fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/codex/stop-proxy").catch(() => {});
     } else if (provider === "xai") {
-      fetch("/api/oauth/xai/stop-proxy").catch(() => {});
+      fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/xai/stop-proxy").catch(() => {});
     }
     onClose();
   }, [onClose, provider]);

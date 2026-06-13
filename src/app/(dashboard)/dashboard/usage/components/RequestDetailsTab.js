@@ -16,7 +16,7 @@ async function fetchProviderNames() {
     return { providerNameCache, providerNodesCache };
   }
 
-  const nodesRes = await fetch("/api/provider-nodes");
+  const nodesRes = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes");
   const nodesData = await nodesRes.json();
   const nodes = nodesData.nodes || [];
   providerNodesCache = {};
@@ -109,7 +109,7 @@ export default function RequestDetailsTab() {
 
   const fetchProviders = useCallback(async () => {
     try {
-      const res = await fetch("/api/usage/providers");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/usage/providers");
       const data = await res.json();
       setProviders(data.providers || []);
 

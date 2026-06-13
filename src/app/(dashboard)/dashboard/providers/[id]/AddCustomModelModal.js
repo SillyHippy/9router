@@ -27,7 +27,7 @@ export default function AddCustomModelModal({ isOpen, providerAlias, providerDis
     setTestStatus("testing");
     setTestError("");
     try {
-      const res = await fetch("/api/models/test", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/test", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model: `${providerAlias}/${cleanId}` }),

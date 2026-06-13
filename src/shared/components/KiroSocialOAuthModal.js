@@ -74,7 +74,7 @@ export default function KiroSocialOAuthModal({ isOpen, provider, onSuccess, onCl
       }
 
       // Exchange code for tokens
-      const res = await fetch("/api/oauth/kiro/social-exchange", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/kiro/social-exchange", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

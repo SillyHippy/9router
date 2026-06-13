@@ -75,7 +75,7 @@ export default function ProviderDetailPage() {
   // Define callbacks BEFORE the useEffect that uses them
   const fetchAliases = useCallback(async () => {
     try {
-      const res = await fetch("/api/models/alias");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/alias");
       const data = await res.json();
       if (res.ok) {
         setModelAliases(data.aliases || {});
@@ -88,8 +88,8 @@ export default function ProviderDetailPage() {
   const fetchConnections = useCallback(async () => {
     try {
       const [connectionsRes, nodesRes] = await Promise.all([
-        fetch("/api/providers", { cache: "no-store" }),
-        fetch("/api/provider-nodes", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes", { cache: "no-store" }),
       ]);
       const connectionsData = await connectionsRes.json();
       const nodesData = await nodesRes.json();
@@ -105,7 +105,7 @@ export default function ProviderDetailPage() {
         if (!node && isCompatible) {
           for (let attempt = 0; attempt < 3; attempt += 1) {
             await new Promise((resolve) => setTimeout(resolve, 150));
-            const retryRes = await fetch("/api/provider-nodes", { cache: "no-store" });
+            const retryRes = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes", { cache: "no-store" });
             if (!retryRes.ok) continue;
             const retryData = await retryRes.json();
             node = (retryData.nodes || []).find((entry) => entry.id === providerId) || null;
@@ -252,7 +252,7 @@ export default function ProviderDetailPage() {
   const handleSetAlias = async (modelId, alias, providerAliasOverride = providerAlias) => {
     const fullModel = `${providerAliasOverride}/${modelId}`;
     try {
-      const res = await fetch("/api/models/alias", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/alias", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model: fullModel, alias }),
@@ -300,7 +300,7 @@ export default function ProviderDetailPage() {
 
   const handleSaveApiKey = async (formData) => {
     try {
-      const res = await fetch("/api/providers", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ provider: providerId, ...formData }),
@@ -1277,7 +1277,7 @@ function AddApiKeyModal({ isOpen, provider, providerName, isCompatible, isAnthro
   const handleValidate = async () => {
     setValidating(true);
     try {
-      const res = await fetch("/api/providers/validate", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ provider, apiKey: formData.apiKey }),
@@ -1300,7 +1300,7 @@ function AddApiKeyModal({ isOpen, provider, providerName, isCompatible, isAnthro
       try {
         setValidating(true);
         setValidationResult(null);
-        const res = await fetch("/api/providers/validate", {
+        const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/validate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ provider, apiKey: formData.apiKey }),
@@ -1436,7 +1436,7 @@ function EditConnectionModal({ isOpen, connection, onSave, onClose }) {
     setValidating(true);
     setValidationResult(null);
     try {
-      const res = await fetch("/api/providers/validate", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ provider: connection.provider, apiKey: formData.apiKey }),
@@ -1461,7 +1461,7 @@ function EditConnectionModal({ isOpen, connection, onSave, onClose }) {
           try {
             setValidating(true);
             setValidationResult(null);
-            const res = await fetch("/api/providers/validate", {
+            const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/validate", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ provider: connection.provider, apiKey: formData.apiKey }),
@@ -1625,7 +1625,7 @@ function EditCompatibleNodeModal({ isOpen, node, onSave, onClose, isAnthropic })
   const handleValidate = async () => {
     setValidating(true);
     try {
-      const res = await fetch("/api/provider-nodes/validate", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

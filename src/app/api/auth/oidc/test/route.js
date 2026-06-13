@@ -13,6 +13,11 @@ async function canAccessTestRoute() {
   return await verifyDashboardAuthToken(token);
 }
 
+function basePathUrl(path, request) {
+  const bp = request.nextUrl?.basePath || process.env.NINEROUTER_BASE_PATH || process.env.NEXT_PUBLIC_BASE_PATH || "";
+  return new URL(bp + path, getPublicOrigin(request));
+}
+
 export async function POST(request) {
   try {
     if (!(await canAccessTestRoute())) {
@@ -39,7 +44,7 @@ export async function POST(request) {
     }
 
     const discovery = await fetchOidcDiscovery(issuerUrl);
-    const redirectUri = `${getPublicOrigin(request)}/api/auth/oidc/callback`;
+    const redirectUri = basePathUrl("/api/auth/oidc/callback", request).href;
     const secretProbe = await probeOidcClientSecret({
       tokenEndpoint: discovery.token_endpoint,
       clientId,

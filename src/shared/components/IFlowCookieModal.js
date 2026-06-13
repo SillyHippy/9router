@@ -24,7 +24,7 @@ export default function IFlowCookieModal({ isOpen, onSuccess, onClose }) {
     setError(null);
 
     try {
-      const res = await fetch("/api/oauth/iflow/cookie", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/iflow/cookie", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ cookie: cookie.trim() }),

@@ -67,7 +67,7 @@ export default function DeepSeekTuiToolCard({
 
   const fetchModelAliases = async () => {
     try {
-      const res = await fetch("/api/models/alias");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/alias");
       const data = await res.json();
       if (res.ok) setModelAliases(data.aliases || {});
     } catch (error) {

@@ -68,7 +68,7 @@ export default function TranslatorPage() {
   const detectMeta = async (rawContent) => {
     try {
       const body = typeof rawContent === "string" ? JSON.parse(rawContent) : rawContent;
-      const res = await fetch("/api/translator/translate", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/translator/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ step: 1, body })
@@ -78,7 +78,7 @@ export default function TranslatorPage() {
     } catch { /* ignore */ }
   };
 
-  const save = (file, content) => fetch("/api/translator/save", {
+  const save = (file, content) => fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/translator/save", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ file, content })
@@ -94,7 +94,7 @@ export default function TranslatorPage() {
       save("1_req_client.json", raw);
       save("2_req_source.json", JSON.stringify({ timestamp: new Date().toISOString(), headers: {}, body: body.body || body }, null, 2));
 
-      const res = await fetch("/api/translator/translate", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/translator/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ step: 2, body })
@@ -117,7 +117,7 @@ export default function TranslatorPage() {
       // Save input: 3_req_openai.json
       save("3_req_openai.json", raw);
 
-      const res = await fetch("/api/translator/translate", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/translator/translate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ step: 3, body: { ...openaiBody, provider: meta?.provider, model: meta?.model } })
@@ -150,7 +150,7 @@ export default function TranslatorPage() {
         return;
       }
 
-      const res = await fetch("/api/translator/send", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/translator/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ provider, model, body: step4.body || step4 })
@@ -176,7 +176,7 @@ export default function TranslatorPage() {
       openNext(5);
 
       // Save to logs/translator/5_res_provider.txt
-      await fetch("/api/translator/save", {
+      await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/translator/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ file: "5_res_provider.txt", content: full })

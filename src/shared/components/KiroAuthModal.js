@@ -28,7 +28,7 @@ export default function KiroAuthModal({ isOpen, onMethodSelect, onClose }) {
       setAutoDetected(false);
 
       try {
-        const res = await fetch("/api/oauth/kiro/auto-import");
+        const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/kiro/auto-import");
         const data = await res.json();
 
         if (data.found) {
@@ -67,7 +67,7 @@ export default function KiroAuthModal({ isOpen, onMethodSelect, onClose }) {
     setError(null);
 
     try {
-      const res = await fetch("/api/oauth/kiro/import", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/kiro/import", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken: refreshToken.trim() }),

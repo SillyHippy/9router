@@ -492,7 +492,7 @@ export default function ProviderLimits() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/proxy-pools?isActive=true", { cache: "no-store" })
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/proxy-pools?isActive=true", { cache: "no-store" })
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled && data?.proxyPools) {

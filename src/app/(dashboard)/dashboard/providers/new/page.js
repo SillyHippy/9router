@@ -51,7 +51,7 @@ export default function NewProviderPage() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/providers", {
+      const response = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

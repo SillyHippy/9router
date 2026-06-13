@@ -56,7 +56,7 @@ export default function MitmToolCard({
 
   const saveMappings = useCallback(async (mappings) => {
     try {
-      await fetch("/api/cli-tools/antigravity-mitm/alias", {
+      await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/antigravity-mitm/alias", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tool: tool.id, mappings }),
@@ -100,7 +100,7 @@ export default function MitmToolCard({
     setLoading(true);
     setWarning(null);
     try {
-      const res = await fetch("/api/cli-tools/antigravity-mitm", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/antigravity-mitm", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tool: tool.id, action, sudoPassword: password }),

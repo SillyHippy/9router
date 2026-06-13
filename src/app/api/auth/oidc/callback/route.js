@@ -54,7 +54,7 @@ export async function GET(request) {
 
     const discovery = await fetchOidcDiscovery(config.issuerUrl);
     const discoveredIssuer = discovery.issuer || config.issuerUrl;
-    const redirectUri = `${getPublicOrigin(request)}/api/auth/oidc/callback`;
+    const redirectUri = basePathUrl("/api/auth/oidc/callback", request).href;
     const tokenData = await exchangeOidcCode({
       tokenEndpoint: discovery.token_endpoint,
       clientId: config.clientId,

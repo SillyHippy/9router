@@ -29,9 +29,9 @@ export default function CombosPage() {
   const fetchData = async () => {
     try {
       const [combosRes, providersRes, settingsRes] = await Promise.all([
-        fetch("/api/combos"),
-        fetch("/api/providers"),
-        fetch("/api/settings"),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/combos"),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers"),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings"),
       ]);
       const combosData = await combosRes.json();
       const providersData = await providersRes.json();
@@ -52,7 +52,7 @@ export default function CombosPage() {
 
   const handleCreate = async (data) => {
     try {
-      const res = await fetch("/api/combos", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/combos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -115,7 +115,7 @@ export default function CombosPage() {
         delete updated[comboName];
       }
       
-      await fetch("/api/settings", {
+      await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ comboStrategies: updated }),
@@ -415,7 +415,7 @@ function ComboFormModal({ isOpen, combo, onClose, onSave, activeProviders, kindF
 
   const fetchModalData = async () => {
     try {
-      const aliasesRes = await fetch("/api/models/alias");
+      const aliasesRes = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/alias");
       if (!aliasesRes.ok) return;
       const aliasesData = await aliasesRes.json();
       setModelAliases(aliasesData.aliases || {});

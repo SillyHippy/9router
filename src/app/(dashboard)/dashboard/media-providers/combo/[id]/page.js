@@ -66,11 +66,11 @@ export default function ComboDetailPage() {
     try {
       const [comboRes, settingsRes, logsRes, keysRes, connsRes, aliasesRes] = await Promise.all([
         fetch(`/api/combos/${id}`, { cache: "no-store" }),
-        fetch("/api/settings", { cache: "no-store" }),
-        fetch("/api/usage/logs", { cache: "no-store" }),
-        fetch("/api/keys", { cache: "no-store" }),
-        fetch("/api/providers", { cache: "no-store" }),
-        fetch("/api/models/alias", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/usage/logs", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/keys", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/alias", { cache: "no-store" }),
       ]);
       if (aliasesRes.ok) setModelAliases((await aliasesRes.json()).aliases || {});
       if (keysRes.ok) {
@@ -151,12 +151,12 @@ export default function ComboDetailPage() {
 
   const handleToggleRoundRobin = async (enabled) => {
     setRoundRobin(enabled);
-    const settingsRes = await fetch("/api/settings", { cache: "no-store" });
+    const settingsRes = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", { cache: "no-store" });
     const s = settingsRes.ok ? await settingsRes.json() : {};
     const updated = { ...(s.comboStrategies || {}) };
     if (enabled) updated[combo.name] = { fallbackStrategy: "round-robin" };
     else delete updated[combo.name];
-    await fetch("/api/settings", {
+    await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ comboStrategies: updated }),

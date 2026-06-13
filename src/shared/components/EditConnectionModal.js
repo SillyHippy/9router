@@ -78,7 +78,7 @@ export default function EditConnectionModal({ isOpen, connection, proxyPools, on
     setValidating(true);
     setValidationResult(null);
     try {
-      const res = await fetch("/api/providers/validate", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -112,7 +112,7 @@ export default function EditConnectionModal({ isOpen, connection, proxyPools, on
           try {
             setValidating(true);
             setValidationResult(null);
-            const res = await fetch("/api/providers/validate", {
+            const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/validate", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({

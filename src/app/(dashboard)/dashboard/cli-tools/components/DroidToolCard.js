@@ -69,7 +69,7 @@ export default function DroidToolCard({
 
   const fetchModelAliases = async () => {
     try {
-      const res = await fetch("/api/models/alias");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/alias");
       const data = await res.json();
       if (res.ok) setModelAliases(data.aliases || {});
     } catch (error) {
@@ -100,7 +100,7 @@ export default function DroidToolCard({
   const checkDroidStatus = async () => {
     setCheckingDroid(true);
     try {
-      const res = await fetch("/api/cli-tools/droid-settings");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/droid-settings");
       const data = await res.json();
       setDroidStatus(data);
     } catch (error) {
@@ -143,7 +143,7 @@ export default function DroidToolCard({
         || (apiKeys?.length > 0 ? apiKeys[0].key : null)
         || (!cloudEnabled ? "sk_9router" : null);
 
-      const res = await fetch("/api/cli-tools/droid-settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/droid-settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -171,7 +171,7 @@ export default function DroidToolCard({
     setRestoring(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/cli-tools/droid-settings", { method: "DELETE" });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/droid-settings", { method: "DELETE" });
       const data = await res.json();
       if (res.ok) {
         setMessage({ type: "success", text: "Settings reset successfully!" });

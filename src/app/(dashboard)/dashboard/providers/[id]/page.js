@@ -156,7 +156,7 @@ export default function ProviderDetailPage() {
 
   const handleDisableModel = async (modelId) => {
     try {
-      const res = await fetch("/api/models/disabled", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/disabled", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ providerAlias: providerStorageAlias, ids: [modelId] }),
@@ -184,7 +184,7 @@ export default function ProviderDetailPage() {
       onConfirm: async () => {
         setConfirmState(null);
         try {
-          const res = await fetch("/api/models/disabled", {
+          const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/disabled", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ providerAlias: providerStorageAlias, ids }),
@@ -209,7 +209,7 @@ export default function ProviderDetailPage() {
   // Define callbacks BEFORE the useEffect that uses them
   const fetchAliases = useCallback(async () => {
     try {
-      const res = await fetch("/api/models/alias");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/alias");
       const data = await res.json();
       if (res.ok) {
         setModelAliases(data.aliases || {});
@@ -222,7 +222,7 @@ export default function ProviderDetailPage() {
   // Fetch free models from Kilo API for kilocode provider
   useEffect(() => {
     if (providerId !== "kilocode") return;
-    fetch("/api/providers/kilo/free-models")
+    fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/kilo/free-models")
       .then((res) => res.json())
       .then((data) => { if (data.models?.length) setKiloFreeModels(data.models); })
       .catch(() => {});
@@ -231,10 +231,10 @@ export default function ProviderDetailPage() {
   const fetchConnections = useCallback(async () => {
     try {
       const [connectionsRes, nodesRes, proxyPoolsRes, settingsRes] = await Promise.all([
-        fetch("/api/providers", { cache: "no-store" }),
-        fetch("/api/provider-nodes", { cache: "no-store" }),
-        fetch("/api/proxy-pools?isActive=true", { cache: "no-store" }),
-        fetch("/api/settings", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/proxy-pools?isActive=true", { cache: "no-store" }),
+        fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", { cache: "no-store" }),
       ]);
       const connectionsData = await connectionsRes.json();
       const nodesData = await nodesRes.json();
@@ -262,7 +262,7 @@ export default function ProviderDetailPage() {
         if (!node && isCompatible) {
           for (let attempt = 0; attempt < 3; attempt += 1) {
             await new Promise((resolve) => setTimeout(resolve, 150));
-            const retryRes = await fetch("/api/provider-nodes", { cache: "no-store" });
+            const retryRes = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes", { cache: "no-store" });
             if (!retryRes.ok) continue;
             const retryData = await retryRes.json();
             node = (retryData.nodes || []).find((entry) => entry.id === providerId) || null;
@@ -299,7 +299,7 @@ export default function ProviderDetailPage() {
 
   const saveProviderStrategy = async (strategy, stickyLimit) => {
     try {
-      const settingsRes = await fetch("/api/settings", { cache: "no-store" });
+      const settingsRes = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", { cache: "no-store" });
       const settingsData = settingsRes.ok ? await settingsRes.json() : {};
       const current = settingsData.providerStrategies || {};
 
@@ -317,7 +317,7 @@ export default function ProviderDetailPage() {
         updated[providerId] = override;
       }
 
-      await fetch("/api/settings", {
+      await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ providerStrategies: updated }),
@@ -342,7 +342,7 @@ export default function ProviderDetailPage() {
 
   const saveThinkingConfig = async (mode) => {
     try {
-      const settingsRes = await fetch("/api/settings", { cache: "no-store" });
+      const settingsRes = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", { cache: "no-store" });
       const settingsData = settingsRes.ok ? await settingsRes.json() : {};
       const current = settingsData.providerThinking || {};
       const updated = { ...current };
@@ -351,7 +351,7 @@ export default function ProviderDetailPage() {
       } else {
         updated[providerId] = { mode };
       }
-      await fetch("/api/settings", {
+      await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ providerThinking: updated }),
@@ -382,7 +382,7 @@ export default function ProviderDetailPage() {
   const handleSetAlias = async (modelId, alias, providerAliasOverride = providerAlias) => {
     const fullModel = `${providerAliasOverride}/${modelId}`;
     try {
-      const res = await fetch("/api/models/alias", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/alias", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model: fullModel, alias }),
@@ -594,7 +594,7 @@ export default function ProviderDetailPage() {
   const handleSaveApiKey = async (formData) => {
     setAddConnectionError("");
     try {
-      const res = await fetch("/api/providers", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ provider: providerId, ...formData }),
@@ -875,7 +875,7 @@ export default function ProviderDetailPage() {
     if (testingModelId) return;
     setTestingModelId(modelId);
     try {
-      const res = await fetch("/api/models/test", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/test", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model: `${providerStorageAlias}/${modelId}` }),

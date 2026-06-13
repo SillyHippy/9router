@@ -93,7 +93,7 @@ export default function LanguageSwitcher({ className = "", isOpen: controlledOpe
     setIsPending(true);
     setIsOpen(false);
     try {
-      await fetch("/api/locale", {
+      await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/locale", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ locale: nextLocale }),

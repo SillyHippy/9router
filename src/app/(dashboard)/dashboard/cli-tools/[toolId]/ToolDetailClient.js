@@ -31,10 +31,10 @@ export default function ToolDetailClient({ toolId, machineId }) {
     (async () => {
       try {
         const [provRes, settingsRes, tunnelRes, keysRes] = await Promise.all([
-          fetch("/api/providers"),
-          fetch("/api/settings"),
-          fetch("/api/tunnel/status"),
-          fetch("/api/keys"),
+          fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers"),
+          fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/settings"),
+          fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/tunnel/status"),
+          fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/keys"),
         ]);
         if (!mounted) return;
         if (provRes.ok) {

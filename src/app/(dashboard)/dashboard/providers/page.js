@@ -144,8 +144,8 @@ export default function ProvidersPage() {
     const fetchData = async () => {
       try {
         const [connectionsRes, nodesRes] = await Promise.all([
-          fetch("/api/providers"),
-          fetch("/api/provider-nodes"),
+          fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers"),
+          fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes"),
         ]);
         const connectionsData = await connectionsRes.json();
         const nodesData = await nodesRes.json();
@@ -232,7 +232,7 @@ export default function ProvidersPage() {
     setTestingMode(mode === "provider" ? providerId : mode);
     setTestResults(null);
     try {
-      const res = await fetch("/api/providers/test-batch", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/providers/test-batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mode, providerId }),
@@ -873,7 +873,7 @@ function AddOpenAICompatibleModal({ isOpen, onClose, onCreated }) {
       return;
     setSubmitting(true);
     try {
-      const res = await fetch("/api/provider-nodes", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -906,7 +906,7 @@ function AddOpenAICompatibleModal({ isOpen, onClose, onCreated }) {
   const handleValidate = async () => {
     setValidating(true);
     try {
-      const res = await fetch("/api/provider-nodes/validate", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1065,7 +1065,7 @@ function AddAnthropicCompatibleModal({ isOpen, onClose, onCreated }) {
       return;
     setSubmitting(true);
     try {
-      const res = await fetch("/api/provider-nodes", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -1096,7 +1096,7 @@ function AddAnthropicCompatibleModal({ isOpen, onClose, onCreated }) {
   const handleValidate = async () => {
     setValidating(true);
     try {
-      const res = await fetch("/api/provider-nodes/validate", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes/validate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -24,7 +24,7 @@ export default function CursorAuthModal({ isOpen, onSuccess, onClose }) {
     setWindowsManual(false);
 
     try {
-      const res = await fetch("/api/oauth/cursor/auto-import");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/cursor/auto-import");
       const data = await res.json();
 
       if (data.found) {
@@ -64,7 +64,7 @@ export default function CursorAuthModal({ isOpen, onSuccess, onClose }) {
     setError(null);
 
     try {
-      const res = await fetch("/api/oauth/cursor/import", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/cursor/import", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

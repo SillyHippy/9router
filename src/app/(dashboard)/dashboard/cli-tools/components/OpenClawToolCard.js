@@ -66,7 +66,7 @@ export default function OpenClawToolCard({
 
   const fetchModelAliases = async () => {
     try {
-      const res = await fetch("/api/models/alias");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/alias");
       const data = await res.json();
       if (res.ok) setModelAliases(data.aliases || {});
     } catch (error) {
@@ -98,7 +98,7 @@ export default function OpenClawToolCard({
   const checkOpenclawStatus = async () => {
     setCheckingOpenclaw(true);
     try {
-      const res = await fetch("/api/cli-tools/openclaw-settings");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/openclaw-settings");
       const data = await res.json();
       setOpenclawStatus(data);
     } catch (error) {
@@ -135,7 +135,7 @@ export default function OpenClawToolCard({
         || (apiKeys?.length > 0 ? apiKeys[0].key : null)
         || (!cloudEnabled ? "sk_9router" : null);
 
-      const res = await fetch("/api/cli-tools/openclaw-settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/openclaw-settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -163,7 +163,7 @@ export default function OpenClawToolCard({
     setRestoring(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/cli-tools/openclaw-settings", { method: "DELETE" });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/openclaw-settings", { method: "DELETE" });
       const data = await res.json();
       if (res.ok) {
         setMessage({ type: "success", text: "Settings reset successfully!" });

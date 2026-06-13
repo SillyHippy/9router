@@ -43,7 +43,7 @@ export default function CodexToolCard({ tool, isExpanded, onToggle, baseUrl, api
 
   const fetchModelAliases = async () => {
     try {
-      const res = await fetch("/api/models/alias");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/alias");
       const data = await res.json();
       if (res.ok) setModelAliases(data.aliases || {});
     } catch (error) {
@@ -84,7 +84,7 @@ export default function CodexToolCard({ tool, isExpanded, onToggle, baseUrl, api
   const checkCodexStatus = async () => {
     setCheckingCodex(true);
     try {
-      const res = await fetch("/api/cli-tools/codex-settings");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/codex-settings");
       const data = await res.json();
       setCodexStatus(data);
     } catch (error) {
@@ -103,7 +103,7 @@ export default function CodexToolCard({ tool, isExpanded, onToggle, baseUrl, api
         ? selectedApiKey
         : (!cloudEnabled ? "sk_9router" : selectedApiKey);
 
-      const res = await fetch("/api/cli-tools/codex-settings", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/codex-settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -131,7 +131,7 @@ export default function CodexToolCard({ tool, isExpanded, onToggle, baseUrl, api
     setRestoring(true);
     setMessage(null);
     try {
-      const res = await fetch("/api/cli-tools/codex-settings", { method: "DELETE" });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/cli-tools/codex-settings", { method: "DELETE" });
       const data = await res.json();
       if (res.ok) {
         setMessage({ type: "success", text: "Settings reset successfully!" });

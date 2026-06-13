@@ -28,7 +28,7 @@ export default function ModelAvailabilityBadge() {
 
   const fetchStatus = useCallback(async () => {
     try {
-      const res = await fetch("/api/models/availability");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/availability");
       if (res.ok) {
         const json = await res.json();
         setData(json);
@@ -58,7 +58,7 @@ export default function ModelAvailabilityBadge() {
   const handleClearCooldown = async (provider, model) => {
     setClearing(`${provider}:${model}`);
     try {
-      const res = await fetch("/api/models/availability", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/availability", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "clearCooldown", provider, model }),

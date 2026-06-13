@@ -44,7 +44,7 @@ export default function HeaderMenu({ onLogout }) {
   const handleShutdown = async () => {
     setIsShuttingDown(true);
     try {
-      await fetch("/api/version/shutdown", { method: "POST" });
+      await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/version/shutdown", { method: "POST" });
     } catch (e) {
       // Expected to fail as server shuts down; ignore error
     }

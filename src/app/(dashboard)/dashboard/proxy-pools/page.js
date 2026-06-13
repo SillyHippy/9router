@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { Badge, Button, Card, CardSkeleton, Input, Modal, Toggle, ConfirmModal } from "@/shared/components";
 import { useNotificationStore } from "@/store/notificationStore";
+import { withBasePath } from "@/shared/utils/basePath";
 
 function getStatusVariant(status) {
   if (status === "active") return "success";
@@ -68,7 +69,7 @@ export default function ProxyPoolsPage() {
 
   const fetchProxyPools = useCallback(async () => {
     try {
-      const res = await fetch("/api/proxy-pools?includeUsage=true", { cache: "no-store" });
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/proxy-pools?includeUsage=true", { cache: "no-store" });
       const data = await res.json();
       if (res.ok) {
         setProxyPools(data.proxyPools || []);
@@ -119,7 +120,7 @@ export default function ProxyPoolsPage() {
     setSaving(true);
     try {
       const isEdit = !!editingProxyPool;
-      const res = await fetch(isEdit ? `/api/proxy-pools/${editingProxyPool.id}` : "/api/proxy-pools", {
+      const res = await fetch(withBasePath(isEdit ? `/api/proxy-pools/${editingProxyPool.id}` : `/api/proxy-pools`), {
         method: isEdit ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -376,7 +377,7 @@ export default function ProxyPoolsPage() {
     if (!vercelForm.vercelToken.trim()) return;
     setDeploying(true);
     try {
-      const res = await fetch("/api/proxy-pools/vercel-deploy", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/proxy-pools/vercel-deploy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(vercelForm),
@@ -401,7 +402,7 @@ export default function ProxyPoolsPage() {
     if (!cloudflareForm.accountId.trim() || !cloudflareForm.apiToken.trim()) return;
     setDeploying(true);
     try {
-      const res = await fetch("/api/proxy-pools/cloudflare-deploy", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/proxy-pools/cloudflare-deploy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cloudflareForm),
@@ -426,7 +427,7 @@ export default function ProxyPoolsPage() {
     if (!denoForm.denoToken.trim()) return;
     setDeploying(true);
     try {
-      const res = await fetch("/api/proxy-pools/deno-deploy", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/proxy-pools/deno-deploy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(denoForm),
@@ -528,7 +529,7 @@ export default function ProxyPoolsPage() {
           continue;
         }
 
-        const res = await fetch("/api/proxy-pools", {
+        const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/proxy-pools", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

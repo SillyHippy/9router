@@ -48,7 +48,7 @@ export default function ModelSelectModal({
 
   const fetchCombos = async () => {
     try {
-      const res = await fetch("/api/combos");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/combos");
       if (!res.ok) throw new Error(`Failed to fetch combos: ${res.status}`);
       const data = await res.json();
       setCombos(data.combos || []);
@@ -64,7 +64,7 @@ export default function ModelSelectModal({
 
   const fetchProviderNodes = async () => {
     try {
-      const res = await fetch("/api/provider-nodes");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/provider-nodes");
       if (!res.ok) throw new Error(`Failed to fetch provider nodes: ${res.status}`);
       const data = await res.json();
       setProviderNodes(data.nodes || []);
@@ -80,7 +80,7 @@ export default function ModelSelectModal({
 
   const fetchCustomModels = async () => {
     try {
-      const res = await fetch("/api/models/custom");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/custom");
       if (!res.ok) throw new Error(`Failed to fetch custom models: ${res.status}`);
       const data = await res.json();
       setCustomModels(data.models || []);
@@ -96,7 +96,7 @@ export default function ModelSelectModal({
 
   const fetchDisabledModels = async () => {
     try {
-      const res = await fetch("/api/models/disabled");
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/models/disabled");
       if (!res.ok) throw new Error(`Failed to fetch disabled models: ${res.status}`);
       const data = await res.json();
       setDisabledModels(data.disabled || {});
