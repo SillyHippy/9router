@@ -60,7 +60,7 @@ export default function BulkImportCodexModal({ isOpen, onClose, onSuccess }) {
 
     setSubmitting(true);
     try {
-      const res = await fetch("/api/oauth/codex/bulk-import", {
+      const res = await fetch((process.env.NEXT_PUBLIC_BASE_PATH || "") + "/api/oauth/codex/bulk-import", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ accounts }),
