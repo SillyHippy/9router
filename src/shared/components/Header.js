@@ -210,10 +210,9 @@ export default function Header({ onMenuClick, showMenuButton = true }) {
 
   const handleLogout = async () => {
     try {
-      const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
-      const res = await fetch(basePath + "/api/auth/logout", { method: "POST" });
+      const res = await fetch("/api/auth/logout", { method: "POST" });
       if (res.ok) {
-        router.push(basePath + "/login");
+        router.push("/login");
         router.refresh();
       }
     } catch (err) {
