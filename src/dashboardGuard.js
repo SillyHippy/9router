@@ -164,7 +164,17 @@ export const __test__ = {
 };
 
 export async function proxy(request) {
-  const { pathname } = request.nextUrl;
+  const { pathname: rawPathname } = request.nextUrl;
+
+  // When basePath is configured, request.nextUrl.pathname includes it (e.g. "/9router/api/foo").
+  // Strip the prefix so all downstream path checks match the app-internal routes.
+  const bp = process.env.NEXT_PUBLIC_BASE_PATH || "";
+  const pathname = (bp && rawPathname.startsWith(bp))
+    ? rawPathname.slice(bp.length) || "/"
+    : rawPathname;
+
+  // Helper: prepend basePath to a path for redirect URLs
+  const bpath = (p) => bp + p;
 
   // Local-only gate for spawn-capable / host-secret routes.
   if (LOCAL_ONLY_PATHS.some((p) => pathname.startsWith(p))) {
@@ -210,7 +220,7 @@ export async function proxy(request) {
           const tunnelHost = settings.tunnelUrl ? new URL(settings.tunnelUrl).hostname.toLowerCase() : "";
           const tailscaleHost = settings.tailscaleUrl ? new URL(settings.tailscaleUrl).hostname.toLowerCase() : "";
           if ((tunnelHost && host === tunnelHost) || (tailscaleHost && host === tailscaleHost)) {
-            return NextResponse.redirect(new URL("/login", request.url));
+            return NextResponse.redirect(new URL(bpath("/login"), request.url));
           }
         }
       }
@@ -227,16 +237,16 @@ export async function proxy(request) {
       if (await verifyDashboardAuthToken(token)) {
         return NextResponse.next();
       } else {
-        return NextResponse.redirect(new URL("/login", request.url));
+        return NextResponse.redirect(new URL(bpath("/login"), request.url));
       }
     }
 
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL(bpath("/login"), request.url));
   }
 
   // Redirect / to /dashboard if logged in, or /dashboard if it's the root
   if (pathname === "/") {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL(bpath("/dashboard"), request.url));
   }
 
   return NextResponse.next();

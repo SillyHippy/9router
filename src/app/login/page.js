@@ -29,10 +29,8 @@ export default function LoginPage() {
     async function checkAuth() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000);
-      const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-
       try {
-        const res = await fetch(`${baseUrl}/api/auth/status`, {
+        const res = await fetch("/api/auth/status", {
           signal: controller.signal,
         });
         clearTimeout(timeoutId);
@@ -120,7 +118,8 @@ export default function LoginPage() {
   };
 
   const handleOidcLogin = () => {
-    window.location.href = "/api/auth/oidc/start";
+    const bp = process.env.NEXT_PUBLIC_BASE_PATH || "";
+    window.location.href = bp + "/api/auth/oidc/start";
   };
 
   const oidcAvailable = oidcConfigured && ["oidc", "both"].includes(authMode);
